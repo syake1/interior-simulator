@@ -1,6 +1,8 @@
 import streamlit as st
-from PIL import Image, ImageDraw
-import io
+from openai import OpenAI
+import requests
+from PIL import Image
+from io import BytesIO
 
 # ページ設定
 st.set_page_config(
@@ -10,58 +12,8 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# タイトル
-st.title("🏠 AIインテリア・リフォームシミュレーター (ボタン追加版)")
-st.caption("お部屋の原型を残したまま、自由なプロンプト入力で壁紙・床・家具の品番が連動するシステム")
-
-# -------------------------------------------------------------------------
-# 画像処理関数
-# -------------------------------------------------------------------------
-def generate_ai_image(base_image, wallpaper_prompt, floor_prompt, furniture_prompt):
-    if base_image is None:
-        img = Image.new("RGB", (800, 500), "#f0f2f6")
-        draw = ImageDraw.Draw(img)
-        draw.rectangle([0, 0, 800, 230], fill="#e0e4ec")
-        draw.line([0, 230, 800, 230], fill="#cccccc", width=3)
-        draw.line([150, 230, 0, 500], fill="#cccccc", width=2)
-        draw.line([650, 230, 800, 500], fill="#cccccc", width=2)
-    else:
-        img = Image.open(base_image).convert("RGB").resize((800, 500))
-        
-    overlay = Image.new("RGBA", img.size, (0, 0, 0, 0))
-    draw = ImageDraw.Draw(overlay)
-    
-    wp = wallpaper_prompt.lower() if wallpaper_prompt else ""
-    if "青" in wp or "雲" in wp or "空" in wp:
-        draw.rectangle([0, 0, 800, 230], fill=(135, 206, 235, 100))
-    elif "コンクリート" in wp or "モルタル" in wp or "グレー" in wp or "灰色" in wp:
-        draw.rectangle([0, 0, 800, 230], fill=(128, 128, 128, 120))
-    elif "レンガ" in wp or "タイル" in wp or "茶" in wp:
-        draw.rectangle([0, 0, 800, 230], fill=(188, 143, 143, 110))
-    elif "白" in wp or "ホワイト" in wp or "無地" in wp:
-        draw.rectangle([0, 0, 800, 230], fill=(255, 255, 255, 50))
-    else:
-        draw.rectangle([0, 0, 800, 230], fill=(245, 222, 179, 60))
-
-    fl = floor_prompt.lower() if floor_prompt else ""
-    if "ウォルナット" in fl or "濃い" in fl or "ダーク" in fl or "黒" in fl:
-        draw.rectangle([0, 230, 800, 500], fill=(92, 51, 23, 120))
-    elif "オーク" in fl or "明るい" in fl or "ライト" in fl or "木目" in fl:
-        draw.rectangle([0, 230, 800, 500], fill=(222, 184, 135, 100))
-    elif "大理石" in fl or "白" in fl or "マーブル" in fl:
-        draw.rectangle([0, 230, 800, 500], fill=(245, 245, 245, 90))
-    else:
-        draw.rectangle([0, 230, 800, 500], fill=(160, 82, 45, 70))
-
-    final_img = Image.alpha_composite(img.convert("RGBA"), overlay).convert("RGB")
-    
-    if furniture_prompt:
-        overlay_fur = Image.new("RGBA", final_img.size, (0, 0, 0, 0))
-        draw_fur = ImageDraw.Draw(overlay_fur)
-        draw_fur.rectangle([280, 320, 520, 450], fill=(255, 165, 0, 70), outline=(255, 69, 0, 255), width=2)
-        final_img = Image.alpha_composite(final_img.convert("RGBA"), overlay_fur).convert("RGB")
-        
-    return final_img
+st.title("🏠 AIインテリア・リフォームシミュレーター (安全対策版)")
+st.caption("OpenAIの画像生成AIを接続し、プロンプト通りに鮮明なリフォーム画像を生成するシステム")
 
 # 商品データ
 catalog_data = {
@@ -82,29 +34,50 @@ catalog_data = {
 # サイドバー
 with st.sidebar:
     st.header("🛠️ プロンプト・コントロール")
-    uploaded_file = st.file_uploader("📂 1. お部屋の写真をアップロード", type=["jpg", "jpeg", "png"])
-    
-    st.write("---")
-    st.subheader("🎨 2. リフォームプロンプト入力")
     selected_wallpaper = st.text_input("壁紙クロスへの指示", value="コンクリート調のモダンな壁紙")
     selected_floor = st.text_input("床材への指示", value="大理石風の白い床")
     custom_furniture = st.text_input("配置したい家具", value="北欧風のローテーブル")
     
     st.write("---")
-    # 💥 ここにハッキリとした実行ボタンを追加しました！
-    run_button = st.button("🚀 このプロンプトでAI生成する", type="primary")
+    run_button = st.button("🚀 このプロンプトでAI画像生成", type="primary")
 
 # メイン画面
 col_img, col_info = st.columns([3, 2])
 
 with col_img:
-    st.subheader("🖼️ リアルタイム・プレビュー")
+    st.subheader("🖼️ AI生成プレビュー")
     
-    # ボタンが押されたとき、または最初の読み込み時に画像を計算して保存
-    if "preview_image" not in st.session_state or run_button:
-        st.session_state.preview_image = generate_ai_image(uploaded_file, selected_wallpaper, selected_floor, custom_furniture)
-        
-    st.image(st.session_state.preview_image, caption="シミュレーション結果", use_container_width=True)
+    if run_button:
+        # 安全な暗号庫（Secrets）からAPIキーを自動で読み込む設定
+        if "OPENAI_API_KEY" not in st.secrets:
+            st.error("Streamlitの管理画面でAPIキー（OPENAI_API_KEY）が設定されていません。右下の「Manage app」から設定してください。")
+        else:
+            with st.spinner("AIが鮮明なリフォーム画像を生成中...（約10〜15秒）"):
+                try:
+                    # 鍵を安全に適用
+                    client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
+                    
+                    prompt_text = f"A realistic and high-quality interior photo of a Japanese residential room. The wallpaper is {selected_wallpaper}. The flooring is {selected_floor}. The room is furnished with {custom_furniture}. Bright natural lighting, professional architectural photography style."
+                    
+                    response = client.images.generate(
+                        model="dall-e-3",
+                        prompt=prompt_text,
+                        size="1024x1024",
+                        quality="standard",
+                        n=1
+                    )
+                    
+                    image_url = response.data[0].url
+                    img_res = requests.get(image_url)
+                    st.session_state.preview_img = Image.open(BytesIO(img_res.content))
+                    
+                except Exception as e:
+                    st.error(f"エラーが発生しました: {e}")
+                    
+    if "preview_img" in st.session_state:
+        st.image(st.session_state.preview_img, caption="AIが生成したリフォーム後のイメージ", use_container_width=True)
+    else:
+        st.info("💡 左側にプロンプトを入力し、「AI画像生成」ボタンを押すと、ここに最高画質の部屋画像が現れます。")
 
 with col_info:
     st.subheader("📋 自動検出されたメーカー品番")
