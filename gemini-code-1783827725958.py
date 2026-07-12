@@ -12,8 +12,8 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-st.title("🏠 AIインテリア・リフォームシミュレーター")
-st.caption("写真をアップロードし、天井・壁・クロス（床）を個別に指定してAI画像生成・品番連動するシステム")
+st.title("🏠 AIインテリア・リフォームシミュレーター (エラー診断版)")
+st.caption("写真をアップロードし、天井・壁・クロスを個別に指定してAI画像生成するシステム")
 
 # 商品データ
 catalog_data = {
@@ -27,23 +27,17 @@ catalog_data = {
         "標準": [{"maker": "東リ", "code": "CF9501", "name": "クッションフロア ベーシックオーク"}],
         "ウォルナット": [{"maker": "サンゲツ", "code": "HM11023", "name": "クッションフロア ビターウォルナット"}, {"maker": "東リ", "code": "CF9513", "name": "CFシート-H ウォルナット板巾12cm"}],
         "オーク": [{"maker": "サンゲツ", "code": "HM11011", "name": "クッションフロア ライトオーク"}, {"maker": "リリカラ", "code": "LH81312", "name": "エルワイタイル ナチュラルオーク"}],
-        "大理石": [{"maker": "サンゲツ", "code": "HM11091", "name": "目地なし ビアンコ大理石"}, {"maker": "東リ", "code": "CF9545", "name": "クッションフロア 東リマルキーナ"}]
+        "大理石": [{"maker": "サンゲツ", "code": "HM11091", "name": "目なし ビアンコ大理石"}, {"maker": "東リ", "code": "CF9545", "name": "クッションフロア 東リマルキーナ"}]
     }
 }
 
 # サイドバー
 with st.sidebar:
     st.header("🛠️ コントロールパネル")
-    
-    # 1. 画像アップロード場所を一番上に配置
     uploaded_file = st.file_uploader("📂 1. お部屋の写真をアップロード", type=["jpg", "jpeg", "png"])
-    if uploaded_file:
-        st.success("写真を読み込みました！")
-        
+    
     st.write("---")
     st.subheader("🎨 2. 部位別リフォームプロンプト入力")
-    
-    # 天井・壁・クロスの入力欄
     selected_ceiling = st.text_input("① 天井への指示", value="白い無地の天井クロス")
     selected_wall = st.text_input("② 壁への指示", value="コンクリート調のモダンな壁紙")
     selected_floor = st.text_input("③ 床・クロスへの指示", value="大理石風の白い床")
@@ -59,14 +53,15 @@ with col_img:
     
     if run_button:
         if "GEMINI_API_KEY" not in st.secrets:
-            st.error("Streamlitの管理画面でAPIキー（GEMINI_API_KEY）が設定されていません。右下の「Manage app」から設定してください。")
+            st.error("Streamlitの管理画面でAPIキー（GEMINI_API_KEY）が設定されていません。")
         else:
-            with st.spinner("Google AIが指定された部位に合わせて画像を生成中...（約10〜15秒）"):
+            with st.spinner("Google AIが画像を生成中...（詳細ログ取得モード）"):
                 try:
-                    api_key = st.secrets["GEMINI_API_KEY"]
+                    # キーの前後から不要な空白や引用符を削って綺麗にする処理を追加
+                    api_key = st.secrets["GEMINI_API_KEY"].strip().replace('"', '').replace("'", "")
+                    
                     url = f"https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:generateImages?key={api_key}"
                     
-                    # 天井、壁、床の指定を1つの指示書（英語）に組み立てる
                     prompt_text = f"A realistic and high-quality interior photo of a residential room. The ceiling is {selected_ceiling}. The walls are {selected_wall}. The flooring is {selected_floor}. Bright natural lighting, professional architectural photography style."
                     
                     payload = {
@@ -76,29 +71,32 @@ with col_img:
                         "aspectRatio": "1:1"
                     }
                     
+                    # リクエスト送信
                     response = requests.post(url, json=payload)
-                    res_data = response.json()
                     
+                    # 💥 通信ステータスが200（成功）の場合のみ解析する安全設計に変更
                     if response.status_code == 200:
+                        res_data = response.json()
                         img_b64 = res_data["generatedImages"][0]["image"]["imageBytes"]
                         img_bytes = base64.b64decode(img_b64)
                         st.session_state.preview_img = Image.open(BytesIO(img_bytes))
                     else:
-                        st.error(f"APIエラー: {res_data.get('error', {}).get('message', '不明なエラー')}")
+                        # 💥 エラーが起きた場合、Googleからの生の返答を表示します
+                        st.error(f"Googleサーバーからエラーが返されました (エラーコード: {response.status_code})")
+                        st.warning("👇 Googleからの詳しいメッセージ（ここを読めば原因がわかります）")
+                        st.code(response.text)
                     
                 except Exception as e:
-                    st.error(f"エラーが発生しました: {e}")
+                    st.error(f"プログラム実行エラー: {e}")
                     
     if "preview_img" in st.session_state:
         st.image(st.session_state.preview_img, caption="AIが生成したリフォーム後のイメージ", use_container_width=True)
     elif uploaded_file is not None:
-        st.image(uploaded_file, caption="アップロードされた現状の写真（まだAI生成していません）", use_container_width=True)
-    else:
-        st.info("💡 左側でお部屋の写真をアップロードし、天井・壁・クロスのイメージを言葉で入力して「AI画像生成」ボタンを押してください。")
+        st.image(uploaded_file, caption="アップロードされた現状の写真", use_container_width=True)
 
 with col_info:
     st.subheader("📋 自動検出されたメーカー品番")
-    
+    # （品番連動部分はそのまま維持）
     st.markdown("### 🧱 壁紙クロス候補（壁の指示から連動）")
     wp_prompt = selected_wall.lower()
     wp_key = "標準"
