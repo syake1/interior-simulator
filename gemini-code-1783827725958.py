@@ -1,6 +1,6 @@
 import streamlit as st
-from openai import OpenAI
 import requests
+import base64
 from PIL import Image
 from io import BytesIO
 
@@ -12,8 +12,8 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-st.title("🏠 AIインテリア・リフォームシミュレーター (安全対策版)")
-st.caption("OpenAIの画像生成AIを接続し、プロンプト通りに鮮明なリフォーム画像を生成するシステム")
+st.title("🏠 AIインテリア・リフォームシミュレーター (Google Gemini版)")
+st.caption("Googleの画像生成AI（Imagen 3）を接続し、プロンプト通りに鮮明なリフォーム画像を生成するシステム")
 
 # 商品データ
 catalog_data = {
@@ -48,34 +48,43 @@ with col_img:
     st.subheader("🖼️ AI生成プレビュー")
     
     if run_button:
-        # 安全な暗号庫（Secrets）からAPIキーを自動で読み込む設定
-        if "OPENAI_API_KEY" not in st.secrets:
-            st.error("Streamlitの管理画面でAPIキー（OPENAI_API_KEY）が設定されていません。右下の「Manage app」から設定してください。")
+        # 安全な暗号庫（Secrets）からGoogleのAPIキーを読み込む
+        if "GEMINI_API_KEY" not in st.secrets:
+            st.error("Streamlitの管理画面でAPIキー（GEMINI_API_KEY）が設定されていません。右下の「Manage app」から設定してください。")
         else:
-            with st.spinner("AIが鮮明なリフォーム画像を生成中...（約10〜15秒）"):
+            with st.spinner("Google AIが鮮明なリフォーム画像を生成中...（約10〜15秒）"):
                 try:
-                    # 鍵を安全に適用
-                    client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
+                    api_key = st.secrets["GEMINI_API_KEY"]
+                    
+                    # Google Imagen 3 の画像生成エンドポイント
+                    url = f"https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:generateImages?key={api_key}"
                     
                     prompt_text = f"A realistic and high-quality interior photo of a Japanese residential room. The wallpaper is {selected_wallpaper}. The flooring is {selected_floor}. The room is furnished with {custom_furniture}. Bright natural lighting, professional architectural photography style."
                     
-                    response = client.images.generate(
-                        model="dall-e-3",
-                        prompt=prompt_text,
-                        size="1024x1024",
-                        quality="standard",
-                        n=1
-                    )
+                    payload = {
+                        "prompt": prompt_text,
+                        "numberOfImages": 1,
+                        "outputMimeType": "image/jpeg",
+                        "aspectRatio": "1:1"
+                    }
                     
-                    image_url = response.data[0].url
-                    img_res = requests.get(image_url)
-                    st.session_state.preview_img = Image.open(BytesIO(img_res.content))
+                    # AIへのリクエスト送信
+                    response = requests.post(url, json=payload)
+                    res_data = response.json()
+                    
+                    if response.status_code == 200:
+                        # 特殊な画像データを画面に表示できる形に復元
+                        img_b64 = res_data["generatedImages"][0]["image"]["imageBytes"]
+                        img_bytes = base64.b64decode(img_b64)
+                        st.session_state.preview_img = Image.open(BytesIO(img_bytes))
+                    else:
+                        st.error(f"APIエラー: {res_data.get('error', {}).get('message', '不明なエラー')}")
                     
                 except Exception as e:
                     st.error(f"エラーが発生しました: {e}")
                     
     if "preview_img" in st.session_state:
-        st.image(st.session_state.preview_img, caption="AIが生成したリフォーム後のイメージ", use_container_width=True)
+        st.image(st.session_state.preview_img, caption="Google AIが生成したリフォーム後のイメージ", use_container_width=True)
     else:
         st.info("💡 左側にプロンプトを入力し、「AI画像生成」ボタンを押すと、ここに最高画質の部屋画像が現れます。")
 
