@@ -12,8 +12,8 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-st.title("🏠 AIインテリア・リフォームシミュレーター (Google Gemini版)")
-st.caption("Googleの画像生成AI（Imagen 3）を接続し、プロンプト通りに鮮明なリフォーム画像を生成するシステム")
+st.title("🏠 AIインテリア・リフォームシミュレーター")
+st.caption("写真をアップロードし、天井・壁・クロス（床）を個別に指定してAI画像生成・品番連動するシステム")
 
 # 商品データ
 catalog_data = {
@@ -33,10 +33,20 @@ catalog_data = {
 
 # サイドバー
 with st.sidebar:
-    st.header("🛠️ プロンプト・コントロール")
-    selected_wallpaper = st.text_input("壁紙クロスへの指示", value="コンクリート調のモダンな壁紙")
-    selected_floor = st.text_input("床材への指示", value="大理石風の白い床")
-    custom_furniture = st.text_input("配置したい家具", value="北欧風のローテーブル")
+    st.header("🛠️ コントロールパネル")
+    
+    # 1. 画像アップロード場所を一番上に配置
+    uploaded_file = st.file_uploader("📂 1. お部屋の写真をアップロード", type=["jpg", "jpeg", "png"])
+    if uploaded_file:
+        st.success("写真を読み込みました！")
+        
+    st.write("---")
+    st.subheader("🎨 2. 部位別リフォームプロンプト入力")
+    
+    # 天井・壁・クロスの入力欄
+    selected_ceiling = st.text_input("① 天井への指示", value="白い無地の天井クロス")
+    selected_wall = st.text_input("② 壁への指示", value="コンクリート調のモダンな壁紙")
+    selected_floor = st.text_input("③ 床・クロスへの指示", value="大理石風の白い床")
     
     st.write("---")
     run_button = st.button("🚀 このプロンプトでAI画像生成", type="primary")
@@ -48,18 +58,16 @@ with col_img:
     st.subheader("🖼️ AI生成プレビュー")
     
     if run_button:
-        # 安全な暗号庫（Secrets）からGoogleのAPIキーを読み込む
         if "GEMINI_API_KEY" not in st.secrets:
             st.error("Streamlitの管理画面でAPIキー（GEMINI_API_KEY）が設定されていません。右下の「Manage app」から設定してください。")
         else:
-            with st.spinner("Google AIが鮮明なリフォーム画像を生成中...（約10〜15秒）"):
+            with st.spinner("Google AIが指定された部位に合わせて画像を生成中...（約10〜15秒）"):
                 try:
                     api_key = st.secrets["GEMINI_API_KEY"]
-                    
-                    # Google Imagen 3 の画像生成エンドポイント
                     url = f"https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:generateImages?key={api_key}"
                     
-                    prompt_text = f"A realistic and high-quality interior photo of a Japanese residential room. The wallpaper is {selected_wallpaper}. The flooring is {selected_floor}. The room is furnished with {custom_furniture}. Bright natural lighting, professional architectural photography style."
+                    # 天井、壁、床の指定を1つの指示書（英語）に組み立てる
+                    prompt_text = f"A realistic and high-quality interior photo of a residential room. The ceiling is {selected_ceiling}. The walls are {selected_wall}. The flooring is {selected_floor}. Bright natural lighting, professional architectural photography style."
                     
                     payload = {
                         "prompt": prompt_text,
@@ -68,12 +76,10 @@ with col_img:
                         "aspectRatio": "1:1"
                     }
                     
-                    # AIへのリクエスト送信
                     response = requests.post(url, json=payload)
                     res_data = response.json()
                     
                     if response.status_code == 200:
-                        # 特殊な画像データを画面に表示できる形に復元
                         img_b64 = res_data["generatedImages"][0]["image"]["imageBytes"]
                         img_bytes = base64.b64decode(img_b64)
                         st.session_state.preview_img = Image.open(BytesIO(img_bytes))
@@ -84,15 +90,17 @@ with col_img:
                     st.error(f"エラーが発生しました: {e}")
                     
     if "preview_img" in st.session_state:
-        st.image(st.session_state.preview_img, caption="Google AIが生成したリフォーム後のイメージ", use_container_width=True)
+        st.image(st.session_state.preview_img, caption="AIが生成したリフォーム後のイメージ", use_container_width=True)
+    elif uploaded_file is not None:
+        st.image(uploaded_file, caption="アップロードされた現状の写真（まだAI生成していません）", use_container_width=True)
     else:
-        st.info("💡 左側にプロンプトを入力し、「AI画像生成」ボタンを押すと、ここに最高画質の部屋画像が現れます。")
+        st.info("💡 左側でお部屋の写真をアップロードし、天井・壁・クロスのイメージを言葉で入力して「AI画像生成」ボタンを押してください。")
 
 with col_info:
     st.subheader("📋 自動検出されたメーカー品番")
     
-    st.markdown("### 🧱 壁紙クロス候補")
-    wp_prompt = selected_wallpaper.lower()
+    st.markdown("### 🧱 壁紙クロス候補（壁の指示から連動）")
+    wp_prompt = selected_wall.lower()
     wp_key = "標準"
     if "青" in wp_prompt or "雲" in wp_prompt or "空" in wp_prompt: wp_key = "青空"
     elif "コンクリート" in wp_prompt or "モルタル" in wp_prompt or "グレー" in wp_prompt: wp_key = "コンクリート"
@@ -103,7 +111,7 @@ with col_info:
         st.caption(f" 商品名: {item['name']}")
         
     st.write("")
-    st.markdown("### 🪵 床材・クッションフロア候補")
+    st.markdown("### 🪵 床材・クッションフロア候補（床の指示から連動）")
     fl_prompt = selected_floor.lower()
     fl_key = "標準"
     if "ウォルナット" in fl_prompt or "濃い" in fl_prompt or "ダーク" in fl_prompt: fl_key = "ウォルナット"
