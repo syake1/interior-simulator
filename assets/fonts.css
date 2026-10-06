@@ -1,0 +1,49 @@
+/* Available local families. Unused faces are not downloaded by the browser. */
+@font-face {
+  font-family: "Tsukishima Sans";
+  src: url("fonts/noto-sans-jp/web.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Tsukishima Serif";
+  src: url("fonts/noto-serif-jp/web.woff2") format("woff2");
+  font-weight: 200 900;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Tsukishima Rounded";
+  src: url("fonts/zen-maru-gothic/web.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Register additional downloaded font files here. Paths are relative to this CSS file.
+@font-face {
+  font-family: "Site Serif";
+  src: url("fonts/noto-serif-jp/medium.woff2") format("woff2");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+Then set --font-heading and --font-brand to "Site Serif", serif.
+Use only real filenames and weights; keep license files with each family.
+*/
+:root {
+  --font-body: "Tsukishima Sans", "Yu Gothic", Meiryo, sans-serif;
+  --font-heading: "Tsukishima Serif", "Yu Mincho", serif;
+  --font-brand: var(--font-heading);
+  --font-accent: "Tsukishima Rounded", "Yu Gothic", Meiryo, sans-serif;
+}
+
+body { font-family: var(--font-body); }
+h1, h2 { font-family: var(--font-heading); font-weight: 600; }
+h3 { font-family: var(--font-body); }
+.brand-name, .home-content .hero-brand { font-family: var(--font-brand); font-weight: 600; }
+.home-content .hero h1,
+.home-content .section-heading h2,
+.home-content .intro-grid h2 { font-weight: 600; }
+.home-content .hero-cost { font-family: var(--font-accent); font-weight: 400; }
