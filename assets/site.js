@@ -59,4 +59,5 @@
       }
     });
   }
-})();
+
+;(function(){var b=document.createElement('div');b.textContent='現在サイト作成中です。お問い合わせメールは準備中のため、ご利用いただけません。';b.style.cssText='background:#c0392b;color:#fff;text-align:center;padding:10px 12px;font-weight:700;font-size:15px;position:relative;z-index:9999';document.body.insertBefore(b,document.body.firstChild);var m=document.createElement('meta');m.name='robots';m.content='noindex';document.head.appendChild(m);})();
