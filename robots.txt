@@ -1,2 +1,4 @@
 User-agent: *
 Allow: /
+
+Sitemap: https://syake1.github.io/interior-simulator/sitemap.xml

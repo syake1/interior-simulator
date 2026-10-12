@@ -153,4 +153,8 @@ strong { font-weight: 900; }
   text-shadow: 1px 1px 0 #f4cd64;
 }
 .home-content .intro-grid strong { color: #172d48; }
+.home-content .intro-title { font-size: 32px; line-height: 1.55; }
+@media (max-width: 600px) {
+  .home-content .intro-title { font-size: 27px; }
+}
 .muted, .note, .form-note, .photo-caption { font-weight: 500; }

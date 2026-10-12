@@ -1,6 +1,8 @@
 (() => {
   const config = window.SITE_CONFIG;
-  const email = config.email;
+  const email = config.email || '';
+  const emailReady = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) && email !== 'example@example.com';
+  const contactUrl = /^https:\/\//.test(config.contactUrl || '') ? config.contactUrl : '';
   const experienceToggle = document.querySelector('.experience-toggle');
   if (experienceToggle) {
     experienceToggle.addEventListener('click', () => {
@@ -11,9 +13,23 @@
     });
   }
   document.querySelectorAll('[data-email]').forEach(link => {
-    link.href = `mailto:${email}?subject=${encodeURIComponent('内装工事のご相談')}`;
-    if (link.hasAttribute('data-email-address')) link.textContent = email;
+    link.href = contactUrl || (emailReady ? `mailto:${email}?subject=${encodeURIComponent('内装工事のご相談')}` : 'contact.html#contact-status');
+    if (link.hasAttribute('data-email-address')) link.textContent = contactUrl ? config.contactLabel : emailReady ? email : 'お問い合わせ窓口は準備中です';
+    else if (contactUrl || emailReady) {
+      [...link.childNodes].filter(node => node.nodeType === Node.TEXT_NODE).forEach(node => { node.textContent = contactUrl ? config.contactLabel : 'メールで相談する'; });
+    }
   });
+  const contactStatus = document.querySelector('#contact-status');
+  if (contactStatus && (contactUrl || emailReady)) {
+    contactStatus.querySelector('h2').textContent = 'お問い合わせ';
+    contactStatus.querySelector('p').textContent = '施工希望地域と工事内容をお知らせください。';
+    const link = document.createElement('a');
+    link.className = 'button';
+    link.href = contactUrl || `mailto:${email}`;
+    link.textContent = contactUrl ? config.contactLabel : 'メールで相談する';
+    contactStatus.appendChild(link);
+  }
+  document.querySelectorAll('[data-email-only]').forEach(el => { el.hidden = !emailReady || Boolean(contactUrl); });
   const menu = document.querySelector('.menu-toggle');
   const nav = document.querySelector('#main-nav');
   const closeMenu = () => { menu.setAttribute('aria-expanded', 'false'); nav.classList.remove('is-open'); };
@@ -34,7 +50,7 @@
     slider.addEventListener('input', () => el.style.setProperty('--compare', `${slider.value}%`));
   });
   const form = document.querySelector('#contact-form');
-  if (form) {
+  if (form && emailReady && !contactUrl) {
     const preview = document.querySelector('#mail-preview');
     const status = document.querySelector('#form-status');
     form.addEventListener('submit', event => {
@@ -60,4 +76,4 @@
     });
   }
 
-;(function(){var b=document.createElement('div');b.textContent='現在サイト作成中です。お問い合わせメールは準備中のため、ご利用いただけません。';b.style.cssText='background:#c0392b;color:#fff;text-align:center;padding:10px 12px;font-weight:700;font-size:15px;position:relative;z-index:9999';document.body.insertBefore(b,document.body.firstChild);var m=document.createElement('meta');m.name='robots';m.content='noindex';document.head.appendChild(m);})();
+})();
