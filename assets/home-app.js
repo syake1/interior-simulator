@@ -18,7 +18,9 @@
     ? 'SafariでこのHPを開き、メニューの「共有」→「ホーム画面に追加」→「追加」の順に押してください。「Webアプリとして開く」が表示される場合はオンにしてください。'
     : 'Chromeのメニュー（右上の「︙」）から「ホーム画面に追加」または「アプリをインストール」を選んでください。表示されない場合は、ChromeでこのHPを開き直してください。';
   section.hidden = standalone();
-  (document.querySelector('.footer') || document.body).appendChild(section);
+  const header = document.querySelector('.site-header');
+  if (header) header.insertAdjacentElement('afterend', section);
+  else document.body.prepend(section);
   document.body.appendChild(dialog);
   section.querySelector('button').addEventListener('click', async () => {
     const prompt = installPrompt;
