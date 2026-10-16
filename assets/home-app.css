@@ -13,3 +13,10 @@
 .home-app-dialog form { margin-top:20px; text-align:right; }
 .home-app-dialog button { font:inherit; cursor:pointer; }
 
+
+.home-app-actions { display:flex; flex-direction:column; gap:14px; margin-top:16px; }
+.home-app-actions [hidden] { display:none!important; }
+.home-app-external { text-decoration:underline; }
+
+.home-app-share { display:none; }
+@media(max-width:900px) { #main-nav .home-app-share { display:block; } }
