@@ -1,0 +1,16 @@
+.home-app { display:none; }
+@media (max-width:900px) {
+  .home-app:not([hidden]) { display:flex; align-items:flex-start; gap:14px; max-width:680px; margin:24px auto 0; padding:20px; border:1px solid #cfdad5; border-radius:14px; background:#f5f8f6; color:#20372e; text-align:left; }
+  .home-app img { flex:none; width:48px; height:48px; border-radius:10px; }
+  .home-app > div { flex:1; min-width:0; }
+  .home-app strong { font-size:17px; }
+  .home-app p { font-size:14px; margin:6px 0 14px; line-height:1.7; color:#374d43; }
+  .home-app .button { font:inherit; font-weight:700; font-size:15px; cursor:pointer; max-width:100%; white-space:normal; }
+}
+.home-app-dialog { box-sizing:border-box; width: min(440px,calc(100vw - 32px)); max-height:85vh; overflow:auto; border:1px solid #3d584d; border-radius:16px; padding:24px; background:#fff; color:#20372e; font-family:inherit; }
+.home-app-dialog::backdrop { background:rgba(0,0,0,.5); }
+.home-app-dialog h2 { margin:0 0 14px; font-size:21px; }
+.home-app-dialog p { font-size:16px; line-height:1.9; margin:12px 0; }
+.home-app-dialog form { margin-top:20px; text-align:right; }
+.home-app-dialog button { font:inherit; cursor:pointer; }
+@media(display-mode:standalone) { .home-app { display:none!important; } }
