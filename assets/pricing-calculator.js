@@ -69,7 +69,7 @@
    if(disposal) {
     const location=row.querySelector('input[type="text"]').value.trim();
     const label=(location?location+'：':'')+item.name;
-    if(disposal.pending) { pendingScope=true; disposalLines.push(label+'：施工場所の区分を選択してください'); }
+    if(disposal.pending) { pendingScope=true; disposalLines.push(label+'：お部屋の広さを選んでください'); }
     else if(disposal.unknown) { unknownWaste=true; disposalLines.push(label+'：この区分の処分費は別途お見積もり'); }
     else {
      const wa=disposal.rate.min*disposal.multiplier,wb=disposal.rate.max*disposal.multiplier;
@@ -80,9 +80,9 @@
   }
   const list=wasteSummary.querySelector('ul'); list.replaceChildren();
   for(const text of disposalLines) { const li=document.createElement('li');li.textContent=text;list.append(li); }
-  wasteSummary.querySelector('.calculator-waste-total').textContent=invalid?'数量の入力を確認してください':pendingScope?'施工場所の区分を選ぶと処分費を自動計算します。':included?'産業廃棄物処分費 小計：'+yen(wasteLow)+' 〜 '+yen(wasteHigh)+(unknownWaste?'（別途お見積もり分を除く）':''):'施工内容を選ぶと、対応する処分費をここに表示します。';
-  total.textContent=invalid?'数量の入力を確認してください':pendingScope?'施工場所の区分を選択してください':included?`${yen(low+wasteLow)} 〜 ${yen(high+wasteHigh)}${unknownWaste?' ＋ 処分費別途':''}`:'項目と数量を入力してください';
-  count.textContent=invalid?'入力を修正すると合計を表示します。':pendingScope?'処分費を含む合計を計算するため、各欄の施工場所を選んでください。':included?`${included}項目＋自動計算の産業廃棄物処分費${incomplete?'（未入力の行は含んでいません）':''}`:'';
+  wasteSummary.querySelector('.calculator-waste-total').textContent=invalid?'数量の入力を確認してください':pendingScope?'お部屋の広さを選ぶと、古い材料の処分費を自動計算します。':included?'産業廃棄物処分費 小計：'+yen(wasteLow)+' 〜 '+yen(wasteHigh)+(unknownWaste?'（別途お見積もり分を除く）':''):'施工内容を選ぶと、対応する処分費をここに表示します。';
+  total.textContent=invalid?'数量の入力を確認してください':pendingScope?'お部屋の広さを選んでください':included?`${yen(low+wasteLow)} 〜 ${yen(high+wasteHigh)}${unknownWaste?' ＋ 処分費別途':''}`:'項目と数量を入力してください';
+  count.textContent=invalid?'入力を修正すると合計を表示します。':pendingScope?'古い壁紙・床材の処分費を加えるため、お部屋の広さを選んでください。':included?`${included}項目＋自動計算の産業廃棄物処分費${incomplete?'（未入力の行は含んでいません）':''}`:'';
  }
  function addRow(group,focus=true,after=null) {
   if (group==='protection') protection.checked=true;
@@ -107,8 +107,9 @@
   roomCount.addEventListener('input',calculate);
   const conversionNote=document.createElement('p');conversionNote.className='calculator-conversion-note';conversionNote.setAttribute('role','status');row.querySelector('.calculator-item-note').after(conversionNote);
   const scopeLabel=document.createElement('label'); scopeLabel.className='calculator-scope-label'; scopeLabel.hidden=true;
-  scopeLabel.textContent='施工場所の区分（処分費を自動計算）';
+  scopeLabel.textContent='お部屋の広さを教えてください';
   const scope=document.createElement('select'); scope.className='calculator-scope'; scopeLabel.append(scope); extraLabel.after(scopeLabel);
+  const scopeHelp=document.createElement('span');scopeHelp.className='calculator-extra-note';scopeHelp.textContent='古い壁紙・床材の処分費を計算するために選びます。工事費とは別に計算して、合計に加えます。';scopeLabel.append(scopeHelp);
   scope.addEventListener('change',calculate);
   function updateScope(item) {
    const previous=scope.value; scope.replaceChildren();
@@ -117,10 +118,10 @@
    let options=[];
    if(!scopeLabel.hidden) {
     if(item.group==='wall'&&index===2) options=[['new','新規施工（新築・ボード面）']];
-    else if(item.group==='wall') options=[['','場所の区分を選択してください'],['small','トイレ・洗面所・一面アクセント等の小スペース'],['room','6〜8畳のお部屋（壁・天井）'],['ldk','15〜20畳・LDK等'],['other','その他の規模（処分費は別途見積もり）']];
+    else if(item.group==='wall') options=[['','お部屋の広さを選んでください'],['small','トイレ・洗面所・壁1面だけの貼替え'],['room','6〜8畳のお部屋（壁・天井）'],['ldk','15〜20畳のリビング・ダイニングなど'],['other','上記以外のお部屋（処分費は個別にご案内）']];
     else if(item.unit==='室') options=[['small','トイレ・洗面所（〜4㎡）／入力した室数分']];
     else if(item.unit==='m') options=[['skirting','ソフト巾木（1部屋分）']];
-    else options=[['','場所の区分を選択してください'],['small','トイレ・洗面所（〜4㎡）'],['room','6畳間（約10㎡）'],['other','その他の規模（処分費は別途見積もり）']];
+    else options=[['','お部屋の広さを選んでください'],['small','トイレ・洗面所（〜4㎡）'],['room','6畳間（約10㎡）'],['other','上記以外のお部屋（処分費は個別にご案内）']];
    }
    for(const [value,text] of options) { const option=document.createElement('option'); option.value=value;option.textContent=text;scope.append(option); }
    if(options.some(([value])=>value===previous)) scope.value=previous;
@@ -152,7 +153,7 @@
     const area=input.valueAsNumber*roomCount.valueAsNumber;
     select.value=areaRate.id; select.dispatchEvent(new Event('change'));
     input.value=String(area);roomCount.value='1';scope.value='other';
-    conversionNote.textContent='4㎡を超えたため、室単位の料金から㎡単価へ切り替えました。施工場所の区分もご確認ください。料金表にない規模の処分費は別途お見積もりです。';
+    conversionNote.textContent='4㎡を超えたため、室単位の料金から㎡単価へ切り替えました。お部屋の広さもご確認ください。料金表にない規模の処分費は別途お見積もりです。';
    }
    calculate();
   });
