@@ -1,16 +1,11 @@
 .mobile-pricing-shortcuts { display:none; }
 @media(max-width:900px) {
- .mobile-pricing-shortcuts { display:block; background:#f2f8f4; border-top:1px solid #d7e7dd; border-bottom:1px solid #c5ddd1; }
- .mobile-pricing-shortcuts-inner { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; padding-top:10px; padding-bottom:10px; }
- .mobile-pricing-shortcuts a { display:flex; justify-content:center; align-items:center; gap:7px; min-height:48px; padding:11px 8px; border-radius:10px; font-size:15px; line-height:1.5; font-weight:700; text-align:center; color:#fff; background:#a7413c; }
- .mobile-pricing-shortcuts a:last-child { background:#287b6b; }
- .mobile-pricing-shortcuts a:hover { background:#83352f; color:#fff; }
- .mobile-pricing-shortcuts a:last-child:hover { background:#205c4c; }
- .mobile-pricing-shortcuts svg { width:19px; height:19px; flex:0 0 19px; fill:none; stroke:currentColor; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
+ .mobile-pricing-shortcuts { display:block; background:#fff; }
+ .mobile-pricing-shortcuts-inner { display:flex; align-items:center; gap:16px; padding-top:0; padding-bottom:4px; }
+ .mobile-pricing-shortcuts a { display:inline-block; padding:3px 0; font-size:11px; line-height:1.7; font-weight:400; color:#655f59; text-decoration:underline; text-underline-offset:3px; }
+ .mobile-pricing-shortcuts a:hover { color:#287b6b; }
  .mobile-pricing-shortcuts a:focus-visible { outline:3px solid #173e61; outline-offset:3px; }
 }
 @media(max-width:360px) {
- .mobile-pricing-shortcuts-inner { gap:8px; }
- .mobile-pricing-shortcuts a { font-size:13px; gap:5px; }
- .mobile-pricing-shortcuts svg { width:16px; height:16px; flex-basis:16px; }
+ .mobile-pricing-shortcuts-inner { gap:14px; }
 }
