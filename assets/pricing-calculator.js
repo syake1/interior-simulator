@@ -9,6 +9,12 @@
  const protection = root.querySelector('#calc-protection');
  const total = root.querySelector('#calculator-total');
  const count = root.querySelector('#calculator-count');
+ const floatingTotal=document.createElement('aside');floatingTotal.className='calculator-floating-total';floatingTotal.hidden=true;floatingTotal.setAttribute('aria-label','選択した工事の概算合計');
+ floatingTotal.innerHTML='<div class="container"><div class="calculator-floating-value"><span>選択分の概算合計（税込）</span><output aria-live="off">未入力</output><small></small></div><a href="#calculator-result">内訳を見る</a></div>';
+ document.body.append(floatingTotal);
+ root.querySelector('.calculator-result').id='calculator-result';
+ const floatingOutput=floatingTotal.querySelector('output');
+ const floatingStatus=floatingTotal.querySelector('small');
  const wasteSummary=document.createElement('section'); wasteSummary.className='calculator-auto-waste';
  wasteSummary.innerHTML='<p class="calculator-waste-total"></p><details class="calculator-waste-details"><summary>処分費の内訳を見る</summary><ul></ul></details>';
  form.after(wasteSummary);
@@ -83,6 +89,8 @@
   wasteSummary.querySelector('.calculator-waste-total').textContent=invalid?'数量の入力を確認してください':pendingScope?'お部屋の広さを選ぶと、古い材料の処分費を自動計算します。':included?'産業廃棄物処分費 小計：'+yen(wasteLow)+' 〜 '+yen(wasteHigh)+(unknownWaste?'（別途お見積もり分を除く）':''):'施工内容を選ぶと、対応する処分費をここに表示します。';
   total.textContent=invalid?'数量の入力を確認してください':pendingScope?'お部屋の広さを選んでください':included?`${yen(low+wasteLow)} 〜 ${yen(high+wasteHigh)}${unknownWaste?' ＋ 処分費別途':''}`:'項目と数量を入力してください';
   count.textContent=invalid?'入力を修正すると合計を表示します。':pendingScope?'古い壁紙・床材の処分費を加えるため、お部屋の広さを選んでください。':included?`${included}項目＋自動計算の産業廃棄物処分費${incomplete?'（未入力の行は含んでいません）':''}`:'';
+  floatingOutput.textContent=invalid?'入力をご確認ください':pendingScope?'お部屋の広さを選択':included?total.textContent:'未入力';
+  floatingStatus.textContent=!invalid&&!pendingScope&&included&&incomplete?'未入力の項目は含みません':'';
  }
  function addRow(group,focus=true,after=null) {
   if (group==='protection') protection.checked=true;
@@ -179,4 +187,27 @@
  root.querySelector('.calculator-interactive').hidden=false;
  function initialRows() { ['wall','floor'].forEach(group=>addRow(group,false)); }
  initialRows();
+ function syncFloatingOffset() {
+  const contact=document.querySelector('.mobile-cta');
+  const height=contact?Math.ceil(contact.getBoundingClientRect().height):0;
+  document.documentElement.style.setProperty('--calculator-contact-height',height+'px');
+  document.documentElement.style.setProperty('--calculator-floating-height',Math.ceil(floatingTotal.getBoundingClientRect().height)+'px');
+ }
+ function keepInputVisible() {
+  const active=document.activeElement;
+  if(floatingTotal.hidden||!root.contains(active)||!active.matches('input,select,button')) return;
+  const rect=active.getBoundingClientRect();
+  const bottom=floatingTotal.getBoundingClientRect().top;
+  const header=document.querySelector('.site-header')?.getBoundingClientRect().bottom||0;
+  if(rect.bottom>bottom-12||rect.top<header+12) active.scrollIntoView({block:'center',behavior:'auto'});
+ }
+ new IntersectionObserver(entries=>{
+  floatingTotal.hidden=!entries[0].isIntersecting;syncFloatingOffset();
+ }).observe(root);
+ const sizeObserver=new ResizeObserver(()=>{syncFloatingOffset();keepInputVisible();});
+ sizeObserver.observe(floatingTotal);
+ const contact=document.querySelector('.mobile-cta');if(contact) sizeObserver.observe(contact);
+ window.addEventListener('resize',()=>{syncFloatingOffset();keepInputVisible();});
+ root.addEventListener('focusin',()=>requestAnimationFrame(keepInputVisible));
+ syncFloatingOffset();
 })();
