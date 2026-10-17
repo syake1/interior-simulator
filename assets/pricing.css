@@ -150,11 +150,12 @@
 .calculator-room-label[hidden] { display:none; }
 .calculator-room-count { max-width:160px!important; }
 .calculator-conversion-note { color:#285b88; font-size:14px; font-weight:700; margin-top:12px; }
-.calculator-auto-waste { background:#f5effb; border:1px solid #d9cae9; border-radius:12px; padding:22px; margin-top:24px; }
-.calculator-auto-waste h3 { color:#674785; font-size:19px; margin-bottom:14px; }
-.calculator-auto-waste ul { padding-left:1.3em; font-size:14px; line-height:1.9; overflow-wrap:anywhere; }
-.calculator-auto-waste li + li { margin-top:10px; }
-.calculator-waste-total { color:#674785; font-weight:700; margin-top:14px; }
+.calculator-auto-waste { background:#f8f4fc; border:1px solid #e2d7ed; border-radius:8px; padding:9px 12px; margin-top:10px; }
+.calculator-auto-waste ul { padding-left:1.3em; margin:6px 0 0; font-size:12px; line-height:1.6; overflow-wrap:anywhere; }
+.calculator-auto-waste li + li { margin-top:5px; }
+.pricing-calculator .calculator-waste-total { color:#674785; font-weight:600; font-size:13px; line-height:1.6; margin:0; }
+.calculator-waste-details { border:0; margin-top:3px; }
+.calculator-waste-details > summary { padding:3px 0; font-size:12px; line-height:1.6; color:#674785; gap:8px; }
 .calculator-area-guide { margin:28px 0; padding:24px; background:#f3f8fc; border:1px solid #c4d9e8; border-radius:14px; }
 .calculator-area-guide h3 { font-size:21px; color:#285b88; margin:0 0 14px; }
 .calculator-area-guide > p { font-size:14px; }
@@ -178,10 +179,10 @@
 }
 .calculator-repeat { font:inherit; font-size:14px; font-weight:700; color:#235d4e; background:#fff; border:1px solid #a8cabb; border-radius:8px; padding:12px 14px; cursor:pointer; margin-top:14px; max-width:100%; }
 .calculator-row[data-group="waste"] .calculator-repeat { color:#674785; border-color:#c6afd9; }
-.calculator-result { background:#e8f3ed; padding:24px; border-radius:12px; margin:24px 0 18px; }
-.calculator-result > p:first-child { color:#235d4e; font-size:15px; font-weight:700; }
-.calculator-result output { display:block; margin-top:8px; font-size:clamp(21px,3vw,32px); font-weight:700; color:#235d4e; overflow-wrap:anywhere; }
-#calculator-count { font-size:14px; margin-top:8px; }
+.calculator-result { background:#edf5f0; border:1px solid #d0e5d9; padding:10px 12px; border-radius:8px; margin:10px 0 12px; }
+.calculator-result > p:first-child { color:#235d4e; font-size:12px; font-weight:600; line-height:1.5; }
+.calculator-result output { display:block; margin-top:2px; font-size:clamp(18px,2vw,22px); line-height:1.5; font-weight:700; color:#235d4e; overflow-wrap:anywhere; }
+#calculator-count { font-size:11px; margin-top:2px; line-height:1.5; }
 .pricing-calculator button:focus-visible,.pricing-calculator input:focus-visible,.pricing-calculator select:focus-visible { outline:3px solid #266d91; outline-offset:3px; }
 @media(max-width:700px) {
  .pricing-calculator { padding:24px 18px; }
@@ -191,5 +192,36 @@
  .calculator-row-grid { grid-template-columns:minmax(0,1fr) auto; }
  .calculator-row-grid label:first-child { grid-column:1/-1; }
  .calculator-row-grid input { max-width:180px; }
- .calculator-result { padding:20px 16px; }
+ .calculator-result { padding:10px 12px; }
+}
+/* Compact price lists: keep the service, amount and note close together. */
+.pricing-page > section[id$="-prices"] { padding-block:36px; }
+.pricing-heading { gap:12px; margin-bottom:16px; }
+.pricing-heading h2 { font-size:25px; }
+.pricing-heading p { margin-top:5px; font-size:13px; line-height:1.65; }
+.pricing-number { flex-basis:42px; height:42px; border-radius:12px; font-size:21px; }
+.pricing-table { font-size:13px; line-height:1.65; }
+.pricing-table th,.pricing-table td { padding:12px 14px; }
+.pricing-table .pricing-amount { font-size:14px; }
+.pricing-subtitle { margin:22px 0 12px; font-size:18px; }
+.pricing-copy { font-size:13px; line-height:1.8; margin-bottom:20px; }
+.pricing-page > section[id$="-prices"] .pricing-note { font-size:12px; line-height:1.7; margin-top:10px; }
+.pricing-page > section[id$="-prices"] .pricing-notice { padding:14px 18px; margin-top:18px; }
+.pricing-page > section[id$="-prices"] .pricing-notice h3 { font-size:15px; margin-bottom:6px; }
+.pricing-page > section[id$="-prices"] .pricing-notice p,.pricing-page > section[id$="-prices"] .pricing-preparation ul { font-size:12px; line-height:1.8; }
+.pricing-page > section[id$="-prices"] .pricing-preparation li + li { margin-top:8px; }
+@media(max-width:600px) {
+ .pricing-page > section[id$="-prices"] { padding-block:24px; }
+ .pricing-heading { gap:10px; margin-bottom:12px; }
+ .pricing-heading h2 { font-size:20px; }
+ .pricing-heading p { font-size:12px; margin-top:4px; }
+ .pricing-number { flex-basis:32px; height:32px; font-size:17px; border-radius:9px; }
+ .pricing-table-wrap { border:1px solid var(--category-line); border-radius:9px; padding:0 12px; background:#fff; }
+ .pricing-table tr { display:block; margin:0; padding:11px 0; background:transparent; border:0; border-bottom:1px solid var(--category-line); border-radius:0; box-shadow:none; }
+ .pricing-table tr:last-child { border-bottom:0; }
+ .pricing-table tbody th { padding:0 0 4px; font-size:14px; line-height:1.6; }
+ .pricing-table td { padding:3px 0 0; font-size:12px; line-height:1.6; }
+ .pricing-table td::before { display:none; }
+ .pricing-table td.pricing-amount { padding:3px 0; margin:0; font-size:15px; line-height:1.6; background:transparent; border-radius:0; }
+ .pricing-subtitle { font-size:16px; margin:18px 0 10px; }
 }

@@ -10,7 +10,7 @@
  const total = root.querySelector('#calculator-total');
  const count = root.querySelector('#calculator-count');
  const wasteSummary=document.createElement('section'); wasteSummary.className='calculator-auto-waste';
- wasteSummary.innerHTML='<h3>産業廃棄物処分費（自動計算）</h3><ul></ul><p class="calculator-waste-total"></p>';
+ wasteSummary.innerHTML='<p class="calculator-waste-total"></p><details class="calculator-waste-details"><summary>処分費の内訳を見る</summary><ul></ul></details>';
  form.after(wasteSummary);
  const disposalRates=items.filter(item=>item.group==='waste');
  function disposalFor(item,row,quantity) {
