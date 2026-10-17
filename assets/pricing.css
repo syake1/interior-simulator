@@ -227,6 +227,11 @@
 }
 .calculator-floating-total { position:fixed; left:0; right:0; bottom:var(--calculator-contact-height,0px); z-index:45; padding:9px 0; background:#f5fbf7; border-top:2px solid #43856e; box-shadow:0 -3px 12px #244f3d12; }
 .calculator-floating-total[hidden] { display:none; }
+.pricing-brand-ending { padding:32px 0 24px; background:#081d30; }
+.pricing-brand-ending figure { margin:0; }
+.pricing-brand-ending img { display:block; width:100%; height:auto; border-radius:10px; }
+.pricing-brand-ending figcaption { margin-top:10px; color:#d6e0e9; font-size:11px; line-height:1.6; text-align:right; }
+@media(max-width:600px) { .pricing-brand-ending { padding:20px 0 16px; } }
 .calculator-floating-total > .container { max-width:1160px; display:flex; align-items:center; justify-content:space-between; gap:12px; }
 .calculator-floating-value { min-width:0; }
 .calculator-floating-value > span { display:block; color:#486657; font-size:11px; line-height:1.4; }
