@@ -1,0 +1,18 @@
+/* Give the existing craftsman banners the first view of the home page. */
+.home-content .hero-copy > p:empty { display:none; }
+.home-content .hero-copy > p:not(.eyebrow) { margin:0; }
+.home-content .hero-copy > p:not(.eyebrow) > br:only-child { display:none; }
+.home-content .hero-banners img { height:auto; }
+.home-brand-ending { background:#071c30; padding:28px 0 20px; }
+.home-brand-ending figure { margin:0; }
+.home-brand-ending img { width:100%; height:auto; border-radius:12px; }
+.home-brand-ending figcaption { color:#e4ce96; text-align:center; font-size:12px; margin-top:8px; }
+@media(max-width:1000px) {
+ .home-content .hero-copy { padding-top:10px; }
+ .home-content .hero-banners { gap:10px; }
+ .home-content .hero .eyebrow { margin-bottom:8px; }
+}
+@media(max-width:600px) {
+ .home-brand-ending { padding:18px 0 16px; }
+ .home-brand-ending .container { width:calc(100% - 24px); }
+}
