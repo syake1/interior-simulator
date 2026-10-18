@@ -17,7 +17,7 @@
  display:inline-flex; align-items:center; justify-content:center;
  background:#b9550c; border:1px solid #b9550c; color:#fff;
  font-weight:700; text-shadow:none; border-radius:8px;
- padding:9px 12px; min-height:42px; line-height:1.5; text-align:center;
+ font-size:11px; padding:6px 9px; min-height:34px; line-height:1.4; text-align:center;
  box-shadow:none;
 }
 .site-header #main-nav a.pricing-nav-btn:hover { background:#974208; border-color:#974208; color:#fff; }
