@@ -1,0 +1,21 @@
+/* Compact page rhythm while keeping readable separation between sections. */
+.section { padding-block:44px; }
+.section-heading { margin-bottom:24px; }
+.page-hero { padding-top:28px; padding-bottom:28px; }
+.cta { padding-block:40px; }
+.footer { padding-top:32px; }
+.home-content .intro-grid { align-items:start; gap:32px; }
+.home-content .intro-grid > figure { margin:0; }
+.home-content .intro-grid > figure > img { position:static!important; width:100%; height:auto; }
+.intro-media-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:24px; margin-top:24px; }
+.intro-media-grid > [data-hp-movable-video] { position:static!important; width:100%!important; max-width:none!important; margin:0!important; float:none!important; clear:none!important; }
+.intro-media-grid video { width:100%; height:auto; aspect-ratio:16/9; display:block; }
+.intro-media-grid .yt-wrap { margin:0!important; width:100%; aspect-ratio:16/9; }
+@media(max-width:600px) {
+ .section { padding-block:28px; }
+ .section-heading { margin-bottom:20px; }
+ .page-hero { padding-block:20px; }
+ .cta { padding-block:28px; }
+ .home-content .intro-grid { gap:22px; }
+ .intro-media-grid { grid-template-columns:1fr; gap:18px; margin-top:20px; }
+}
