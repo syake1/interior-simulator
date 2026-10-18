@@ -1,0 +1,2 @@
+.home-content .hero h1.eyebrow { font-family:inherit; font-size:15px; line-height:1.5; font-weight:700; }
+@media(max-width:600px) { .home-content .hero h1.eyebrow { font-size:13px; } }
