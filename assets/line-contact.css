@@ -1,0 +1,23 @@
+.line-btn,.button.line-btn,.mobile-cta .line-btn,.main-nav .line-btn {
+ display:inline-flex; align-items:center; justify-content:center; gap:8px;
+ background:#087f43; border:1px solid #087f43; color:#fff;
+ font-weight:700; text-shadow:none; border-radius:8px;
+ padding:14px 20px; min-height:48px; line-height:1.5; text-align:center;
+}
+.line-btn:hover,.button.line-btn:hover { background:#066636; color:#fff; }
+.line-qr { display:none; margin:18px 0 0; text-align:center; }
+.line-qr img { width:160px; height:160px; margin-inline:auto; border:8px solid white; border-radius:8px; box-sizing:content-box; background:white; }
+.line-qr p { margin:8px 0 0; font-size:13px; color:#4b5750; text-shadow:none; }
+.line-contact-actions { flex:0 0 auto; }
+.line-contact-guide { max-width:880px; margin-inline:auto; padding:28px; border:1px solid #cfe6d7; border-radius:16px; background:#f5fbf7; }
+.line-contact-guide .line-btn { margin-top:20px; }
+.line-contact-guide h2 { font-size:26px; }
+.line-contact-guide ol { margin:20px 0; padding-left:1.5em; }
+.line-contact-guide li { margin:10px 0; }
+.line-contact-guide .note { font-size:14px; }
+.site-header #main-nav a.line-btn { min-height:42px; padding:9px 12px; color:#fff; border-bottom:1px solid #087f43; text-shadow:none; }
+.page-hero + .section:has(.line-contact-guide) { padding-top:24px; }
+.footer .line-btn { font-size:15px; margin-top:16px; }
+.pricing-total .line-contact-actions { margin-top:16px; }
+@media(min-width:901px) { .line-qr { display:block; } }
+@media(max-width:900px) { .line-contact-guide { padding:22px 18px; } .line-contact-guide .line-btn { width:100%; } }

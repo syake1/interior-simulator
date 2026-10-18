@@ -1,8 +1,6 @@
 (() => {
   const config = window.SITE_CONFIG;
-  const email = config.email || '';
-  const emailReady = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) && email !== 'example@example.com';
-  const contactUrl = /^https:\/\//.test(config.contactUrl || '') ? config.contactUrl : '';
+
   const experienceToggle = document.querySelector('.experience-toggle');
   if (experienceToggle) {
     experienceToggle.addEventListener('click', () => {
@@ -12,24 +10,6 @@
       document.querySelector('.experience-strip').classList.toggle('is-paused', paused);
     });
   }
-  document.querySelectorAll('[data-email]').forEach(link => {
-    link.href = contactUrl || (emailReady ? `mailto:${email}?subject=${encodeURIComponent('内装工事のご相談')}` : 'contact.html#contact-status');
-    if (link.hasAttribute('data-email-address')) link.textContent = contactUrl ? config.contactLabel : emailReady ? email : 'お問い合わせ窓口は準備中です';
-    else if (contactUrl || emailReady) {
-      [...link.childNodes].filter(node => node.nodeType === Node.TEXT_NODE).forEach(node => { node.textContent = contactUrl ? config.contactLabel : 'メールで相談する'; });
-    }
-  });
-  const contactStatus = document.querySelector('#contact-status');
-  if (contactStatus && (contactUrl || emailReady)) {
-    contactStatus.querySelector('h2').textContent = 'お問い合わせ';
-    contactStatus.querySelector('p').textContent = '施工希望地域と工事内容をお知らせください。';
-    const link = document.createElement('a');
-    link.className = 'button';
-    link.href = contactUrl || `mailto:${email}`;
-    link.textContent = contactUrl ? config.contactLabel : 'メールで相談する';
-    contactStatus.appendChild(link);
-  }
-  document.querySelectorAll('[data-email-only]').forEach(el => { el.hidden = !emailReady || Boolean(contactUrl); });
   const menu = document.querySelector('.menu-toggle');
   const nav = document.querySelector('#main-nav');
   const closeMenu = () => { menu.setAttribute('aria-expanded', 'false'); nav.classList.remove('is-open'); };
@@ -43,37 +23,10 @@
   document.addEventListener('click', event => { if (!event.target.closest('.site-header')) closeMenu(); });
   document.querySelectorAll('[data-area]').forEach(el => {
     const cities = config.areas[el.dataset.area] || [];
-    el.textContent = cities.length ? cities.join('・') : '県内の施工場所・工事内容をメールでお知らせください。';
+    el.textContent = cities.length ? cities.join('・') : '県内の施工場所・工事内容をLINEでお知らせください。';
   });
   document.querySelectorAll('[data-compare]').forEach(el => {
     const slider = el.querySelector('input');
     slider.addEventListener('input', () => el.style.setProperty('--compare', `${slider.value}%`));
   });
-  const form = document.querySelector('#contact-form');
-  if (form && emailReady && !contactUrl) {
-    const preview = document.querySelector('#mail-preview');
-    const status = document.querySelector('#form-status');
-    form.addEventListener('submit', event => {
-      event.preventDefault();
-      if (!form.reportValidity()) return;
-      const data = new FormData(form);
-      const body = `ネットインテリア月島 ご担当者様\n\n内装工事について相談します。\n\nお名前：${data.get('name')}\nメールアドレス：${data.get('email')}\n施工希望地域：${data.get('region')}\n工事内容：${data.getAll('service').join('、') || '未定・相談したい'}\n\nお問い合わせ内容：\n${data.get('message')}\n\n`;
-      preview.value = body;
-      preview.closest('.mail-draft').hidden = false;
-      const link = document.querySelector('#prepared-email');
-      link.href = `mailto:${email}?subject=${encodeURIComponent('内装工事のご相談：' + data.get('name'))}&body=${encodeURIComponent(body)}`;
-      status.textContent = 'メール文面を作成しました。下のボタンからメールアプリを開き、内容をご確認のうえ送信してください。まだお問い合わせは送信されていません。';
-      link.focus();
-    });
-    document.querySelector('#copy-email').addEventListener('click', async () => {
-      try {
-        await navigator.clipboard.writeText(preview.value);
-        status.textContent = '文面をコピーしました。メールに貼り付けて送信してください。';
-      } catch {
-        preview.focus(); preview.select();
-        status.textContent = '文面を選択しました。コピーしてメールに貼り付けてください。';
-      }
-    });
-  }
-
 })();
