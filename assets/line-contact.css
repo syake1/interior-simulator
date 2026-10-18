@@ -21,3 +21,14 @@
 .pricing-total .line-contact-actions { margin-top:16px; }
 @media(min-width:901px) { .line-qr { display:block; } }
 @media(max-width:900px) { .line-contact-guide { padding:22px 18px; } .line-contact-guide .line-btn { width:100%; } }
+
+.line-back-home { margin-top:18px; }
+.line-contact-dialog { width:min(460px,calc(100vw - 32px)); max-height:calc(100dvh - 40px); overflow:auto; padding:28px; border:1px solid #cfe6d7; border-radius:18px; color:#173e2b; background:#f7fcf9; }
+.line-contact-dialog::backdrop { background:#092b235c; }
+.line-contact-dialog h2 { font-family:inherit; font-size:24px; color:#173e2b; -webkit-text-stroke:0; text-shadow:none; margin:8px 0 14px; }
+.line-contact-dialog p { font-size:15px; text-shadow:none; }
+.line-dialog-close { display:block; margin-left:auto; padding:7px 12px; border:1px solid #becfc5; border-radius:8px; background:white; color:#234d37; cursor:pointer; }
+.line-dialog-qr { width:200px; height:200px; margin:18px auto 0; background:white; }
+.line-contact-dialog .note { text-align:center; }
+.line-dialog-actions { display:flex; flex-direction:column; gap:16px; margin-top:20px; text-align:center; }
+.line-dialog-external { color:#185e3c; font-size:13px; text-decoration:underline; }
