@@ -1,15 +1,23 @@
-/* Keep desktop navigation beside the logo instead of below it. */
+/* Keep the logo and navigation together in the center of the header. */
 @media(min-width:901px) {
- .site-header .header-inner { width:calc(100% - 40px); max-width:1440px; flex-wrap:nowrap; gap:24px; min-height:100px; padding-block:10px; }
+ .site-header .header-inner { width:calc(100% - 40px); max-width:1280px; flex-wrap:nowrap; justify-content:center; gap:28px; min-height:100px; padding-block:10px; }
  .site-header .brand { flex:0 0 auto; }
  .site-header .brand-sign { width:clamp(190px,18vw,240px); }
- .site-header #main-nav { position:static; display:flex; flex:1 1 auto; width:auto; min-width:0; flex-wrap:wrap; justify-content:flex-end; align-items:center; gap:8px 16px; padding:0; border:0; font-size:13px; }
+ .site-header #main-nav { position:static; display:flex; flex:0 1 auto; width:auto; min-width:0; flex-wrap:wrap; justify-content:center; align-items:center; gap:8px 14px; padding:0; border:0; font-size:13px; }
  .site-header #main-nav > a { white-space:nowrap; }
  .site-header #main-nav .button { font-size:13px; padding:9px 12px; min-height:42px; }
  .site-header #main-nav > .nav-extra,.site-header #main-nav > .home-app-menu { display:none; }
  .site-header .menu-toggle { display:none; }
 }
 @media(min-width:901px) and (max-width:1100px) {
- .site-header .header-inner { gap:16px; }
- .site-header #main-nav { gap:6px 12px; font-size:12px; }
+ .site-header .header-inner { gap:20px; }
+ .site-header #main-nav { gap:6px 10px; font-size:12px; }
 }
+.site-header #main-nav a.pricing-nav-btn {
+ display:inline-flex; align-items:center; justify-content:center;
+ background:#b9550c; border:1px solid #b9550c; color:#fff;
+ font-weight:700; text-shadow:none; border-radius:8px;
+ padding:9px 12px; min-height:42px; line-height:1.5; text-align:center;
+ box-shadow:none;
+}
+.site-header #main-nav a.pricing-nav-btn:hover { background:#974208; border-color:#974208; color:#fff; }
