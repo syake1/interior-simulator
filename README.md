@@ -1,6 +1,18 @@
 # ネットインテリア月島 Webサイト
 
-HTML / CSS / JavaScriptによる9ページの静的サイトです。Wix版とは別の、Codexで直接編集できるサイトです。公開先でNode.jsやデータベースを動かす必要はありません。
+HTML / CSS / JavaScriptによる12ページの静的サイトです。Wix版とは別の、Codexで直接編集できるサイトです。公開先でNode.jsやデータベースを動かす必要はありません。
+
+## 現行の公開・編集手順（2026年10月21日）
+
+公開先は https://syake1.github.io/interior-simulator/ 、問い合わせ窓口は公式LINE https://page.line.me/793emvrc です。メール受付は使用していません。
+
+このリポジトリにある現行の12個のHTMLと assets/、images/、sitemap.xml、robots.txt、manifest.webmanifest、および既存のGoogle所有権確認ファイルを保持して公開してください。GitHub Pagesはmainブランチへの反映後に公開結果を確認します。wallpaper-guide.htmlと共有用の assets/discovery.css・assets/page-sharing.js も必須です。
+
+現在のリポジトリには過去の説明にある scripts/build.mjs と content/ の生成元が含まれていません。そのため npm run build は実行できません。現行HTML・assetsを直接編集し、リンク・画像・LINE動線・メタ情報・sitemapを確認してください。古い生成元から上書きすると現行の内容が失われる恐れがあります。
+
+共有機能は現在のGitHub Pages公開URL向けです。独自ドメインへ移転する際は、全ページのcanonical・OGP・構造化データ・sitemapと、assets/page-sharing.jsの公開先チェック、assets/analytics.jsの計測対象ホストも変更して検証してください。旧来のSITE_URLだけを変更しても移転は完了しません。
+
+以下は制作履歴を含む旧手順です。現行仕様と異なるメールフォーム・生成元・公開手順は、この現行手順を優先してください。以前の画面幅テスト記録は当時の版のもので、今回の変更の実機テストではありません。
 
 ## ページ
 
@@ -14,11 +26,14 @@ HTML / CSS / JavaScriptによる9ページの静的サイトです。Wix版と�
 | subsidies.html | 住宅改修の補助制度相談 |
 | works.html | 施工事例 |
 | faq.html | よくある質問 |
-| contact.html | お問い合わせ |
+| contact.html | LINEでのお問い合わせ |
+| pricing.html | 料金・概算計算 |
+| high-performance-wallpaper.html | 高機能クロス |
+| wallpaper-guide.html | 壁紙貼り替えの相談前チェックリスト |
 
 ## ローカル確認
 
-今回の確認用サーバーは http://127.0.0.1:8790/ で起動済みです。2026年10月5日、9ページを375px・1440pxで検査し、トップは320px・390px・768px・1920pxでも確認しました。ローカルフォントの読み込み、リンク、画像、見出し、メール宛先、メニュー、FAQ、メール文面作成の検査でエラーはありません。実際のメール送信・受信は未確認です。
+今回の確認用サーバーは http://127.0.0.1:8790/ で起動済みです。2026年10月5日、12ページを375px・1440pxで検査し、トップは320px・390px・768px・1920pxでも確認しました。ローカルフォントの読み込み、リンク、画像、見出し、メール宛先、メニュー、FAQ、メール文面作成の検査でエラーはありません。実際のメール送信・受信は未確認です。
 
 `index.html`をブラウザで開くと閲覧できます。コピー機能なども確認する場合は、Node.jsを利用してこのフォルダで次を実行してください。
 
@@ -175,8 +190,8 @@ npm run build
 
 公開URLを設定するとcanonical、OGP画像、sitemap.xml、robots.txtのサイトマップ指定を生成します。ドメインが未定の状態では架空のURLを出力しません。
 
-4. 9個のHTMLと `assets/`、`images/`、`robots.txt`、生成された `sitemap.xml` をレンタルサーバー等の公開フォルダ（public_htmlなど）へアップロードします。`scripts/`、`content/`、`qa/`、READMEは公開不要です。
-5. ドメインとSSLを設定し、HTTPSで9ページ・画像・メールリンク・フォームを実機で確認します。
+4. 12個のHTMLと `assets/`、`images/`、`robots.txt`、生成された `sitemap.xml` をレンタルサーバー等の公開フォルダ（public_htmlなど）へアップロードします。`scripts/`、`content/`、`qa/`、READMEは公開不要です。
+5. ドメインとSSLを設定し、HTTPSで12ページ・画像・メールリンク・フォームを実機で確認します。
 6. Google Search Consoleへサイトを登録し、sitemap.xmlを送信します。検索順位や検索結果での表示を保証するものではありません。
 
 会社の所在地・営業時間・実績・電話番号は提供されていないため創作していません。必要な公開情報は実際の内容を確認して追加してください。
