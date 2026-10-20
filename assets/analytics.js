@@ -21,10 +21,13 @@
   };
   // Label the owner's public social-profile links without forwarding arbitrary URL parameters.
   const source = new URL(location.href).searchParams.get('utm_source')?.toLowerCase();
-  if (['line', 'instagram', 'facebook', 'x'].includes(source)) {
+  if (['line', 'instagram', 'facebook', 'x', 'youtube'].includes(source)) {
     settings.campaign_source = source;
-    settings.campaign_medium = 'social';
-    settings.campaign_name = 'profile';
+    settings.campaign_medium = source === 'youtube' ? 'video' : 'social';
+    const campaign = new URL(location.href).searchParams.get('utm_campaign');
+    settings.campaign_name = ['profile', 'wallpaper_tips', 'pricing_guide', 'work_scene', 'window_tips', 'small_repair', 'naoto_story'].includes(campaign) ? campaign : 'profile';
+    const content = new URL(location.href).searchParams.get('utm_content');
+    if (/^(profile|post_[0-9]{2}|naoto_ep[0-9]{2})$/.test(content || '')) settings.campaign_content = content;
   }
   window.gtag('config', id, settings);
   const script = document.createElement('script');
